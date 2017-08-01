@@ -1,0 +1,38 @@
+[ := "("
+] := ")?"
+( := "("
+) := ")"
+
+
+or := "|"
+any := "*"
+end := ";"
+
+
+
+NumType := "num"
+StringType := "string"
+
+WhatsThisOperator := "whatsthis\?"
+
+AddWord := "add"
+ToWord := "to"
+
+TakeWord := "take away"
+FromWord := "from"
+
+PrintToken := "print"
+
+
+Term := "\w+"
+MathOperator := ( "\*\*" or "[+\-*/]" )
+NumLiteral := "\-?" ( "\d" or "\." ) "+"
+StrLiteral := "\".+?\""
+EndChar := ";"
+LogicalOperator := ( "==" or "&&" or "\|\|" )
+Assignment := "="
+CommaSeperator := ","
+LeftBracket := "\("
+RightBracket := "\)"
+BitwiseOperator := ( "\^" )
+

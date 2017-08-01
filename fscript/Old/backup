@@ -1,0 +1,91 @@
+
+class Expression(ParseTree):
+    def __init__(self, tokens):
+        self.polish = self.shunting(tokens)
+        self.evaluate()
+
+    def evaluate(self):
+        stack = []
+        for letter in self.polish:
+
+            if letter in PRECIDENCE:
+                op1,op2 = stack[-2:]
+                del stack[-2:]
+                if isinstance(op1, NumLiteral) and isinstance(op2, NumLiteral):
+                    if letter == "+":
+                        stack.append(NumLiteral(int(op1.token_content) + int (op2.token_content)))
+                    elif letter == "-":
+                        stack.append(NumLiteral(int(op1.token_content) - int (op2.token_content)))
+                    elif letter == "*":
+                        stack.append(NumLiteral(int(op1.token_content) * int (op2.token_content)))
+                    elif letter == "/":
+                        stack.append(NumLiteral(int(op1.token_content) // int (op2.token_content)))
+                    elif letter == "**":
+                        stack.append(NumLiteral(int(op1.token_content) ** int (op2.token_content)))
+
+
+                    else:
+                        raise Exception("cant find operator?")
+                else:
+                    assert False
+
+
+            else:
+                stack.append(letter)
+        return stack
+    @staticmethod
+    def shunting(tokens):
+        """Convert into polish notation"""
+        output = deque()
+        stack = []
+
+        while tokens and not isinstance(tokens[0], EXPRESSION_CLOSE):
+            token = pop(tokens)
+            if isinstance(token, SHUNT_NUMBER):
+                output.append(token)
+            elif isinstance(token, OPERATORS):
+                while stack:
+                    o1 = token.token_content
+                    o2 = stack[-1]
+                    o1precidence, o1assoc = PRECIDENCE[o1]
+                    o2precidence, o2assoc = PRECIDENCE[o2]
+                    if o1assoc == L and o1precidence <= o2precidence:
+                        output.append(stack[-1])
+                        del stack[-1]
+                    elif o1assoc == R and o1precidence < o2precidence:
+                        output.append(stack[-1])
+                        del stack[-1]
+                    else:
+                        break
+
+                stack.append(token.token_content)
+
+
+
+
+            elif isinstance(token, LeftBracket):
+                stack.append(token.token_content)
+
+            elif isinstance(token, RightBracket):
+                before = stack[:]
+                try:
+                    while stack[-1] != "(":
+                        output.append(stack[-1])
+                        del stack[-1]
+                        # raises IndexError on mismatched parenthesis!!!!!! CHANGEEE!
+                        # pop the leftbracket off
+                    del stack[-1]
+                except:
+                    print(before)
+                    raise
+
+            else:
+                raise Exception("Unexpected token," + str(token))
+
+        while stack:
+            assert not isinstance(stack[-1], (LeftBracket, RightBracket))
+            output.append(stack[-1])
+            del stack[-1]
+
+
+        return output

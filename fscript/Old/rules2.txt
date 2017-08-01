@@ -1,0 +1,28 @@
+[ := "("
+] := ")?"
+( := "("
+) := ")"
+
+or := "|"
+any := "*"
+end := ";"
+# [ item ] => (item)?
+ 	 	
+term := "\w+"
+space := " "
+optS := [ + space + ]
+
+dataType := term
+
+declarationItem := term + [ + "=" + term + ]
+declaration := term + space + declarationItem + ( + "," + declarationItem + ) + any + end
+
+mathsOps := "\*\*" + or + "[+\-*/]"
+
+bTerm := term + or + ( + term + )
+
+bExpr := bTerm + [ + mathOp + bTerm] + or + ( + bTerm + [ + mathOp + bTerm] + )
+
+assignment := term = "=" + expresssion + end
+
+scope := declaration + any + or + 
